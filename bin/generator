@@ -6,5 +6,8 @@ declare(strict_types=1);
 require __DIR__.'/../vendor/autoload.php';
 
 use EFrane\SchemaObjects\Generator\Application\GeneratorApplication;
+use Tracy\Debugger;
+
+Debugger::enable();
 
 return (new GeneratorApplication())();

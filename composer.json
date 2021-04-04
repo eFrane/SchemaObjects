@@ -18,10 +18,10 @@
     "bin": "bin/generator",
 
     "require-dev": {
-        "symfony/console": "^5.2"
-    },
-    "require": {
-        "symfony/http-client": "^5.2",
-        "php-di/php-di": "^6.3"
+        "symfony/console": "^5.2",
+        "webmozart/path-util": "^2.3",
+        "php-di/php-di": "^6.3",
+        "easyrdf/easyrdf": "^1.1",
+        "tracy/tracy": "^2.8"
     }
 }
