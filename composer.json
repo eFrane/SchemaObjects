@@ -1,0 +1,23 @@
+{
+    "name": "efrane/schema-objects",
+    "description": "schema.org-based value objects / micro types",
+    "license": "MIT",
+
+    "autoload": {
+        "psr-4": {
+            "EFrane\\SchemaObjects\\": "src/"
+        }
+    },
+
+    "autoload-dev": {
+        "psr-4": {
+            "EFrane\\SchemaObjects\\Generator\\": "generator/"
+        }
+    },
+
+    "bin": "bin/generator",
+
+    "require-dev": {
+        "symfony/console": "^5.2"
+    }
+}
