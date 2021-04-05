@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace EFrane\SchemaObjects\Generator\Application;
 
 
+use Webmozart\PathUtil\Path;
+
 final class GeneratorConfig
 {
     private ?string $schemaDefinitionFile;
@@ -19,5 +21,15 @@ final class GeneratorConfig
     public function getSchemaDefinitionFile(): string
     {
         return $this->schemaDefinitionFile ?? 'https://schema.org/version/latest/schemaorg-all-https.rdf';
+    }
+
+    public function getOutputDir(): string
+    {
+        return Path::join(dirname(__DIR__, 2), 'src');
+    }
+
+    public function getNamespace(): string
+    {
+        return 'EFrane\\SchemaObjects';
     }
 }

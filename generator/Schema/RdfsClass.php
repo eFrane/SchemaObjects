@@ -30,6 +30,8 @@ final class RdfsClass extends Resource
             return null;
         }
 
+        echo gettype($this->get('rdfs:subClassOf'));exit;
+
         return $this->get('rdfs:subClassOf')->getValue();
     }
 
