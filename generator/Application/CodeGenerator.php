@@ -4,10 +4,9 @@
 namespace EFrane\SchemaObjects\Generator\Application;
 
 
-use EasyRdf\Graph;
+use EFrane\SchemaObjects\Generator\Schema\SchemaReader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
-use Webmozart\PathUtil\Path;
 
 final class CodeGenerator
 {
@@ -15,28 +14,24 @@ final class CodeGenerator
      * @var GeneratorConfig
      */
     private $generatorConfig;
+    /**
+     * @var SchemaReader
+     */
+    private SchemaReader $schemaReader;
+
+    public function __construct(SchemaReader $schemaReader)
+    {
+        $this->schemaReader = $schemaReader;
+    }
 
     public function update(GeneratorConfig $config, OutputInterface $output): int
     {
         $this->generatorConfig = $config;
 
-        $graph = $this->loadSchemaGraph();
+        $classDefinitions = $this->schemaReader->getClasses($config->getSchemaDefinitionFile());
 
-        var_export($graph);
+        $output->writeln('Creating classes for '.count($classDefinitions).' type definitions');
 
         return Command::SUCCESS;
-    }
-
-    private function loadSchemaGraph(): Graph
-    {
-        $graph = new Graph();
-
-        $graphUrl = $this->generatorConfig->getSchemaDefinitionFile();
-
-        is_file($graphUrl)
-            ? $graph->parseFile($graphUrl, 'rdf')
-            : $graph->load($graphUrl, 'rdf');
-
-        return $graph;
     }
 }
