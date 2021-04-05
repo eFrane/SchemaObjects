@@ -6,14 +6,14 @@ namespace EFrane\SchemaObjects\Generator\Schema;
 
 use MyCLabs\Enum\Enum;
 
-class DataType extends Enum
+final class PrimitiveType extends Enum
 {
-    const BOOLEAN = 'https://schema.org/Boolean';
-    const DATE = 'https://schema.org/Date';
-    const DATETIME = 'https://schema.org/DateTime';
-    const NUMBER = 'https://schema.org/Number';
-    const TEXT = 'https://schema.org/Text';
-    const TIME = 'https://schema.org/Time';
+    const BOOLEAN = 'boolean';
+    const DATE = 'date';
+    const DATETIME = 'dateTime';
+    const NUMBER = 'number';
+    const TEXT = 'text';
+    const TIME = 'time';
 
     static public function map(string $rdfTypeUri): string
     {

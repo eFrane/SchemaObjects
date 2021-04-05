@@ -22,6 +22,10 @@
         "webmozart/path-util": "^2.3",
         "php-di/php-di": "^6.3",
         "easyrdf/easyrdf": "^1.1",
-        "laminas/laminas-code": "^4.1"
+        "laminas/laminas-code": "^4.1",
+        "doctrine/inflector": "^2.0"
+    },
+    "require": {
+        "myclabs/php-enum": "^1.8"
     }
 }

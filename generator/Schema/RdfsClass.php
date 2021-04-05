@@ -5,24 +5,12 @@ declare(strict_types=1);
 namespace EFrane\SchemaObjects\Generator\Schema;
 
 
-use EasyRdf\Resource;
-
-final class RdfsClass extends Resource
+final class RdfsClass extends SchemaResource
 {
     /**
      * @var RdfProperty[]
      */
-    private $properties;
-
-    public function getLabel(): string
-    {
-        return $this->get('rdfs:label')->getValue();
-    }
-
-    public function getComment(): string
-    {
-        return $this->get('rdfs:comment')->getValue();
-    }
+    private $properties = [];
 
     public function getSubClassOf(): ?string
     {
@@ -30,9 +18,18 @@ final class RdfsClass extends Resource
             return null;
         }
 
-        echo gettype($this->get('rdfs:subClassOf'));exit;
+        $superResource = $this->get('rdfs:subClassOf');
 
-        return $this->get('rdfs:subClassOf')->getValue();
+        if ($superResource instanceof self) {
+            return $superResource->getLabel();
+        }
+
+        /**
+         * If a super resource is not a rdfs class itself it may be assumed to
+         * be part of the encasing schema and thus a primitive type.
+         */
+
+        return null;
     }
 
     public function isSubClass(): bool

@@ -6,11 +6,22 @@ namespace EFrane\SchemaObjects\Generator\Schema;
 
 use EasyRdf\Resource;
 
-final class RdfProperty extends Resource
+final class RdfProperty extends SchemaResource
 {
-    public function includesDomain(string $uri): bool
+    const PRIMITIVE_TYPE_URI = 'https://schema.org/DataType';
+
+    public function isPrimitiveType(): bool
     {
-        return $this->hasProperty('schema:domainIncludes')
-            && $this->get('schema:domainIncludes')->getValue() === $uri;
+        return PrimitiveType::isValid($this->getLabel());
+    }
+
+    public function getPhpType(): string
+    {
+        if (!$this->isPrimitiveType()) {
+            // TODO: handle references to complex types
+            return 'mixed';
+        }
+
+        return PrimitiveType::map($this->getLabel());
     }
 }

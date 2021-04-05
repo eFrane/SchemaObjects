@@ -4,12 +4,17 @@
 namespace EFrane\SchemaObjects\Generator\Application;
 
 
+use Doctrine\Inflector\InflectorFactory;
+use Doctrine\Inflector\Language;
 use EFrane\SchemaObjects\Generator\Schema\RdfsClass;
 use EFrane\SchemaObjects\Generator\Schema\SchemaReader;
 use Laminas\Code\DeclareStatement;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Generator\FileGenerator;
+use Laminas\Code\Generator\MethodGenerator;
+use Laminas\Code\Generator\ParameterGenerator;
+use Laminas\Code\Generator\PropertyGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,7 +59,13 @@ final class CodeGenerator
         RdfsClass $classDefinition,
         GeneratorConfig $config
     ): void {
-        $className = sprintf('%s', $classDefinition->getLabel());
+        $inflector = InflectorFactory::createForLanguage(Language::ENGLISH)->build();
+
+        $className = $classDefinition->getLabel();
+        if (is_numeric($className[0])) {
+            $className = '_'.$className;
+        }
+
         $fileName = Path::join($config->getOutputDir(), sprintf('%s.php', $className));
 
         $file = new FileGenerator();
@@ -70,6 +81,29 @@ final class CodeGenerator
             $class->setExtendedClass('Type');
         } else {
             $class->setExtendedClass($classDefinition->getSubClassOf());
+        }
+
+        foreach ($classDefinition->getProperties() as $propertyDefinition) {
+            $propertyName = $propertyDefinition->getLabel();
+
+            $class->addProperty($propertyName);
+            $property = $class->getProperty($propertyName);
+
+            $property->setDocBlock($propertyDefinition->getComment())
+                ->setVisibility(PropertyGenerator::VISIBILITY_PRIVATE)
+                ->omitDefaultValue();
+
+            $getter = new MethodGenerator(sprintf('get%s', $inflector->classify($propertyName)));
+            $getter->setVisibility(MethodGenerator::VISIBILITY_PUBLIC)
+                ->setBody("return \$this->{$propertyName};");
+
+            $class->addMethodFromGenerator($getter);
+
+            $setter = new MethodGenerator(sprintf('set%s', $inflector->classify($propertyName)), ["{$propertyName}"]);
+            $setter->setVisibility(MethodGenerator::VISIBILITY_PUBLIC)
+                ->setBody("\$this->{$propertyName} = \${$propertyName};");
+
+            $class->addMethodFromGenerator($setter);
         }
 
         $file->setClass($class);
