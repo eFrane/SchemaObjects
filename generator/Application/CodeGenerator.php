@@ -10,6 +10,7 @@ use EFrane\SchemaObjects\Generator\Schema\RdfsClass;
 use EFrane\SchemaObjects\Generator\Schema\SchemaReader;
 use Laminas\Code\DeclareStatement;
 use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\DocBlock\Tag\LicenseTag;
 use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Generator\FileGenerator;
 use Laminas\Code\Generator\MethodGenerator;
@@ -72,6 +73,10 @@ final class CodeGenerator
         $file->setFilename($fileName);
         $file->setNamespace($config->getNamespace());
         $file->setDeclares([DeclareStatement::strictTypes(1)]);
+        $file->setDocBlock(DocBlockGenerator::fromArray([
+            'longDescription' => 'This is a generated class based on the schema.org type catalog.',
+            'tags' => [new LicenseTag('MIT')],
+        ]));
 
         $class = new ClassGenerator($className, $config->getNamespace());
 
